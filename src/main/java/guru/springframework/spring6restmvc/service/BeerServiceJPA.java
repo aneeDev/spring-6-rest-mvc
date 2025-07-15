@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -107,6 +108,11 @@ public class BeerServiceJPA implements BeerService {
     @Override
     public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beerDTO) {
 
+        /*return Optional.of(beerMapper.beerToBeerDto(
+                beerRepository.save(beerMapper.beerDtoToBeer(beerDTO))
+        ));*/
+
+
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
         beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
@@ -115,6 +121,7 @@ public class BeerServiceJPA implements BeerService {
             foundBeer.setUpc(beerDTO.getUpc());
             foundBeer.setPrice(beerDTO.getPrice());
             foundBeer.setQuantityOnHand(beerDTO.getQuantityOnHand());
+            foundBeer.setVersion(beerDTO.getVersion());
             atomicReference.set(Optional.of(beerMapper.beerToBeerDto(beerRepository.save(foundBeer))));
         }, () -> atomicReference.set(Optional.empty()));
 
